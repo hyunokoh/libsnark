@@ -1,0 +1,2 @@
+../../../build/libsnark/jsnark_interface/run_ppzksnark se SHA256_optimized.arith SHA256_Sample_Run1_optimized.in
+../../../build/libsnark/jsnark_interface/run_ppzksnark gg SHA256_optimized.arith SHA256_Sample_Run1_optimized.in
