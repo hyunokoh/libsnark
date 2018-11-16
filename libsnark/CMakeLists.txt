@@ -239,6 +239,18 @@ target_link_libraries(
 )
 
 add_executable(
+  profile_r1cs_rom_se_ppzksnark
+  EXCLUDE_FROM_ALL
+
+  zk_proof_systems/ppzksnark/r1cs_rom_se_ppzksnark/profiling/profile_r1cs_rom_se_ppzksnark.cpp
+)
+target_link_libraries(
+  profile_r1cs_rom_se_ppzksnark
+
+  snark
+)
+
+add_executable(
   profile_r1cs_mp_ppzkpcd
   EXCLUDE_FROM_ALL
 
@@ -569,6 +581,18 @@ target_link_libraries(
 )
 
 add_executable(
+  zk_proof_systems_r1cs_rom_se_ppzksnark_test
+  EXCLUDE_FROM_ALL
+
+  zk_proof_systems/ppzksnark/r1cs_rom_se_ppzksnark/tests/test_r1cs_rom_se_ppzksnark.cpp
+)
+target_link_libraries(
+  zk_proof_systems_r1cs_rom_se_ppzksnark_test
+
+  snark
+)
+
+add_executable(
   zk_proof_systems_r1cs_gg_ppzksnark_test
   EXCLUDE_FROM_ALL
 
@@ -676,6 +700,31 @@ target_link_libraries(
   snark
 )
 
+file(MAKE_DIRECTORY jsnark_interface)
+
+add_executable(
+  run_ppzksnark
+
+  jsnark_interface/Util.hpp
+  jsnark_interface/Util.cpp
+  jsnark_interface/CircuitReader.hpp
+  jsnark_interface/CircuitReader.cpp
+  jsnark_interface/run_ppzksnark.cpp
+)
+target_link_libraries(
+  run_ppzksnark
+
+  snark
+)
+
+set_target_properties(run_ppzksnark
+   PROPERTIES
+   ARCHIVE_OUTPUT_DIRECTORY "jsnark_interface/"
+   LIBRARY_OUTPUT_DIRECTORY "jsnark_interface/"
+   RUNTIME_OUTPUT_DIRECTORY "jsnark_interface/"
+)
+
+
 include(CTest)
 add_test(
   NAME common_routing_algorithms_test
@@ -738,6 +787,10 @@ add_test(
   COMMAND zk_proof_systems_r1cs_se_ppzksnark_test
 )
 add_test(
+  NAME zk_proof_systems_r1cs_rom_se_ppzksnark_test
+  COMMAND zk_proof_systems_r1cs_rom_se_ppzksnark_test
+)
+add_test(
   NAME zk_proof_systems_r1cs_gg_ppzksnark_test
   COMMAND zk_proof_systems_r1cs_gg_ppzksnark_test
 )
@@ -785,6 +838,7 @@ add_dependencies(check relations_ssp_test)
 add_dependencies(check zk_proof_systems_bacs_ppzksnark_test)
 add_dependencies(check zk_proof_systems_r1cs_ppzksnark_test)
 add_dependencies(check zk_proof_systems_r1cs_se_ppzksnark_test)
+add_dependencies(check zk_proof_systems_r1cs_rom_se_ppzksnark_test)
 add_dependencies(check zk_proof_systems_r1cs_gg_ppzksnark_test)
 add_dependencies(check zk_proof_systems_ram_ppzksnark_test)
 add_dependencies(check zk_proof_systems_tbcs_ppzksnark_test)
