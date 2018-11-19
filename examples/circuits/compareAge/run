@@ -1,0 +1,2 @@
+#../../../build/libsnark/jsnark_interface/run_ppzksnark se compareAge_optimized.arith compareAge_Sample_Run1_optimized.in
+../../../build/libsnark/jsnark_interface/run_ppzksnark gg compareAge_optimized.arith compareAge_Sample_Run1_optimized.in

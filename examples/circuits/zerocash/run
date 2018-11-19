@@ -1,0 +1,2 @@
+#../../../build/libsnark/jsnark_interface/run_ppzksnark se PourCircuit_optimized.arith PourCircuit_SampleTest1_optimized.in
+../../../build/libsnark/jsnark_interface/run_ppzksnark gg PourCircuit_optimized.arith PourCircuit_SampleTest1_optimized.in

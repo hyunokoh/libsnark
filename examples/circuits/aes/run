@@ -1,0 +1,2 @@
+#../../../build/libsnark/jsnark_interface/run_ppzksnark se AES128.arith AES128_Sample_Run1.in
+../../../build/libsnark/jsnark_interface/run_ppzksnark gg AES128.arith AES128_Sample_Run1.in

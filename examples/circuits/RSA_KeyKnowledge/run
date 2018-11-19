@@ -1,0 +1,2 @@
+#../../../build/libsnark/jsnark_interface/run_ppzksnark se RSA_KeyKnowledge_optimized.arith RSA_KeyKnowledge_Sample_Run1_optimized.in
+../../../build/libsnark/jsnark_interface/run_ppzksnark gg RSA_KeyKnowledge.arith RSA_KeyKnowledge_Sample_Run1.in
