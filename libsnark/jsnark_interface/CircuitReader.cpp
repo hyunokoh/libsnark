@@ -10,8 +10,6 @@ CircuitReader::CircuitReader(char* arithFilepath, char* inputsFilepath,
 		ProtoboardPtr pb) {
 
 	this->pb = pb;
-	numWires = 0;
-	numInputs = numNizkInputs = numOutputs = 0;
 
 	parseAndEval(arithFilepath, inputsFilepath);
 	constructCircuit(arithFilepath);
@@ -39,16 +37,6 @@ void CircuitReader::parseAndEval(char* arithFilepath, char* inputsFilepath) {
 	}
 
 	getline(arithfs, line);
-	int ret = sscanf(line.c_str(), "total %u", &numWires);
-
-	if (ret != 1) {
-		printf("File Format Does not Match\n");
-		exit(-1);
-	}
-
-	wireValues.resize(numWires);
-	wireUseCounters.resize(numWires);
-	wireLinearCombinations.resize(numWires);
 
 	if (!inputfs.good()) {
 		printf("Unable to open input file %s \n", inputsFilepath);
@@ -59,9 +47,9 @@ void CircuitReader::parseAndEval(char* arithFilepath, char* inputsFilepath) {
 			if (line.length() == 0) {
 				continue;
 			}
-			Wire wireId;
+			char wireId[80];
 			inputStr = new char[line.size()];
-			if (2 == sscanf(line.c_str(), "%u %s", &wireId, inputStr)) {
+			if (2 == sscanf(line.c_str(), "%s %s", wireId, inputStr)) {
 				wireValues[wireId] = readFieldElementFromHex(inputStr);
 			} else {
 				printf("Error in Input\n");
@@ -77,7 +65,7 @@ void CircuitReader::parseAndEval(char* arithFilepath, char* inputsFilepath) {
 	char* outputStr;
 	unsigned int numGateInputs, numGateOutputs;
 
-	Wire wireId;
+	char wireId[80];
 
 	FieldT oneElement = FieldT::one();
 	FieldT zeroElement = FieldT::zero();
@@ -93,19 +81,17 @@ void CircuitReader::parseAndEval(char* arithFilepath, char* inputsFilepath) {
 		if (line.length() == 0) {
 			continue;
 		}
+		if (line[0] == '#') 
+			continue;
+
 		inputStr = new char[line.size()];
 		outputStr = new char[line.size()];
 
-		if (line[0] == '#') {
-			continue;
-		} else if (1 == sscanf(line.c_str(), "input %u", &wireId)) {
-			numInputs++;
+		if (1 == sscanf(line.c_str(), "input %s", wireId)) {
 			inputWireIds.push_back(wireId);
-		} else if (1 == sscanf(line.c_str(), "nizkinput %u", &wireId)) {
-			numNizkInputs++;
+		} else if (1 == sscanf(line.c_str(), "nizkinput %s", wireId)) {
 			nizkWireIds.push_back(wireId);
-		} else if (1 == sscanf(line.c_str(), "output %u", &wireId)) {
-			numOutputs++;
+		} else if (1 == sscanf(line.c_str(), "output %s", wireId)) {
 			outputWireIds.push_back(wireId);
 			wireUseCounters[wireId]++;
 		} else if (5
@@ -202,6 +188,7 @@ void CircuitReader::parseAndEval(char* arithFilepath, char* inputsFilepath) {
 			printf("Error: unrecognized line: %s\n", line.c_str());
 			assert(0);
 		}
+end_loop:
 		delete[] inputStr;
 		delete[] outputStr;
 	}
@@ -220,17 +207,19 @@ void CircuitReader::constructCircuit(char* arithFilepath) {
 	unsigned int i;
 
 	currentVariableIdx = currentLinearCombinationIdx = 0;
-	for (i = 0; i < numInputs; i++) {
+
+	Wire wire;
+	for (auto &wire : inputWireIds) {
 		variables.push_back(make_shared<Variable>("input"));
-		variableMap[inputWireIds[i]] = currentVariableIdx;
+		variableMap[wire] = currentVariableIdx;
 		currentVariableIdx++;
 	}
-	for (i = 0; i < numOutputs; i++) {
+	for (auto &wire : outputWireIds) {
 		variables.push_back(make_shared<Variable>("output"));
-		variableMap[outputWireIds[i]] = currentVariableIdx;
+		variableMap[wire] = currentVariableIdx;
 		currentVariableIdx++;
 	}
-	for (i = 0; i < numNizkInputs; i++) {
+	for (auto &wire : nizkWireIds) {
 		variables.push_back(make_shared<Variable>("nizk input"));
 		variableMap[nizkWireIds[i]] = currentVariableIdx;
 		currentVariableIdx++;
@@ -252,7 +241,6 @@ void CircuitReader::constructCircuit(char* arithFilepath) {
 	// Parse the circuit: few lines were imported from Pinocchio's code.
 
 	getline(ifs2, line);
-	sscanf(line.c_str(), "total %d", &numWires);
 
 	int lineCount = 0;
 	while (getline(ifs2, line)) {
@@ -264,6 +252,11 @@ void CircuitReader::constructCircuit(char* arithFilepath) {
 		if (line.length() == 0) {
 			continue;
 		}
+		if (line[0] == '#')
+			continue;
+		if (line.compare(0,5,"total")==0)
+			continue;
+
 		inputStr = new char[line.size()];
 		outputStr = new char[line.size()];
 
@@ -304,6 +297,8 @@ void CircuitReader::constructCircuit(char* arithFilepath) {
 		} else {
 //			assert(0);
 		}
+
+end_loop:
 		delete[] inputStr;
 		delete[] outputStr;
 		clean();
@@ -343,7 +338,7 @@ void CircuitReader::mapValuesToProtoboard() {
 
 }
 
-int CircuitReader::find(Wire wireId, LinearCombinationPtr& lc,
+int CircuitReader::find(const Wire& wireId, LinearCombinationPtr& lc,
 		bool intentionToEdit) {
 
 	LinearCombinationPtr p = wireLinearCombinations[wireId];

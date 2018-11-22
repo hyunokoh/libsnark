@@ -29,7 +29,8 @@ using namespace libsnark;
 using namespace gadgetlib2;
 using namespace std;
 
-typedef unsigned int Wire;
+//typedef unsigned int Wire;
+typedef string Wire;
 
 typedef libff::Fr<libff::default_ec_pp> FieldT;
 typedef ::std::shared_ptr<LinearCombination> LinearCombinationPtr;
@@ -49,8 +50,8 @@ class CircuitReader {
 public:
 	CircuitReader(char* arithFilepath, char* inputsFilepath, ProtoboardPtr pb);
 
-	int getNumInputs() { return numInputs;}
-	int getNumOutputs() { return numOutputs;}
+	int getNumInputs() { return inputWireIds.size();}
+	int getNumOutputs() { return outputWireIds.size();}
 	std::vector<Wire> getInputWireIds() const { return inputWireIds; }
 	std::vector<Wire> getOutputWireIds() const { return outputWireIds; }
 
@@ -58,14 +59,14 @@ private:
 	ProtoboardPtr pb;
 
 	std::vector<VariablePtr> variables;
-	std::vector<LinearCombinationPtr> wireLinearCombinations;
+	std::map<Wire,LinearCombinationPtr> wireLinearCombinations;
 	std::vector<LinearCombinationPtr> zeroPwires;
 
 	WireMap variableMap;
 	WireMap zeropMap;
 
-	std::vector<unsigned int> wireUseCounters;
-	std::vector<FieldT> wireValues;
+	std::map<Wire,unsigned int> wireUseCounters;
+	std::map<Wire,FieldT> wireValues;
 
 	std::vector<Wire> toClean;
 
@@ -73,16 +74,13 @@ private:
 	std::vector<Wire> nizkWireIds;
 	std::vector<Wire> outputWireIds;
 
-	unsigned int numWires;
-	unsigned int numInputs, numNizkInputs, numOutputs;
-
 	unsigned int currentVariableIdx, currentLinearCombinationIdx;
 
 	void parseAndEval(char* arithFilepath, char* inputsFilepath);
 	void constructCircuit(char*);  // Second Pass:
 	void mapValuesToProtoboard();
 
-	int find(unsigned int, LinearCombinationPtr&, bool intentionToEdit = false);
+	int find(const Wire&, LinearCombinationPtr&, bool intentionToEdit = false);
 	void clean();
 
 	void addMulConstraint(char*, char*);

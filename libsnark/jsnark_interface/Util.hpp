@@ -12,7 +12,7 @@ using namespace std;
 typedef libff::Fr<libff::default_ec_pp> FieldT;
 
 
-void readIds(char* str, std::vector<unsigned int>& vec);
+void readIds(char* str, std::vector<string>& vec);
 FieldT readFieldElementFromHex(char* str);
 
 
