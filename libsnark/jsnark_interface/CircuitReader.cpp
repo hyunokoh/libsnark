@@ -36,7 +36,6 @@ void CircuitReader::parseAndEval(char* arithFilepath, char* inputsFilepath) {
 		exit(-1);
 	}
 
-	getline(arithfs, line);
 
 	if (!inputfs.good()) {
 		printf("Unable to open input file %s \n", inputsFilepath);
@@ -77,6 +76,7 @@ void CircuitReader::parseAndEval(char* arithFilepath, char* inputsFilepath) {
 
 	// Parse the circuit: few lines were imported from Pinocchio's code.
 
+	//getline(arithfs, line);
 	while (getline(arithfs, line)) {
 		if (line.length() == 0) {
 			continue;
@@ -188,7 +188,6 @@ void CircuitReader::parseAndEval(char* arithFilepath, char* inputsFilepath) {
 			printf("Error: unrecognized line: %s\n", line.c_str());
 			assert(0);
 		}
-end_loop:
 		delete[] inputStr;
 		delete[] outputStr;
 	}
@@ -240,7 +239,7 @@ void CircuitReader::constructCircuit(char* arithFilepath) {
 
 	// Parse the circuit: few lines were imported from Pinocchio's code.
 
-	getline(ifs2, line);
+	//getline(ifs2, line);
 
 	int lineCount = 0;
 	while (getline(ifs2, line)) {
@@ -260,8 +259,7 @@ void CircuitReader::constructCircuit(char* arithFilepath) {
 		inputStr = new char[line.size()];
 		outputStr = new char[line.size()];
 
-		if (5
-				== sscanf(line.c_str(), "%s in %d <%[^>]> out %d <%[^>]>", type,
+		if (5 == sscanf(line.c_str(), "%s in %d <%[^>]> out %d <%[^>]>", type,
 						&numGateInputs, inputStr, &numGateOutputs, outputStr)) {
 			if (strcmp(type, "add") == 0) {
 				assert(numGateOutputs == 1);
@@ -298,7 +296,6 @@ void CircuitReader::constructCircuit(char* arithFilepath) {
 //			assert(0);
 		}
 
-end_loop:
 		delete[] inputStr;
 		delete[] outputStr;
 		clean();
