@@ -221,7 +221,7 @@ void CircuitReader::constructCircuit(char* arithFilepath) {
 	}
 	for (auto &wire : nizkWireIds) {
 		variables.push_back(make_shared<Variable>("nizk input"));
-		variableMap[nizkWireIds[i]] = currentVariableIdx;
+		variableMap[wire] = currentVariableIdx;
 		currentVariableIdx++;
 	}
 
