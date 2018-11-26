@@ -1,0 +1,43 @@
+#This example checks x*y == z where x, y, z are large integers
+#This will be utilized to compute z == g^e mod n to check membership
+input 0		 # The one-input wire.
+input x0
+input x1
+input x2
+input y0
+input y1
+input y2
+nizkinput z0
+nizkinput z1
+nizkinput z2
+nizkinput z3
+nizkinput z4
+# s == 1 case for (s^0 x0 + s^1 x1 + s^2 x2)*(s^0 y0 + s^1 y1 + s^2 y2) = (s^0 z0 + s^1 z1 + s^2 z2 + s^3 z3 + s^4 z4)
+add in 3 <x0 x1 x2> out 1 <sx1>
+add in 3 <y0 y1 y2> out 1 <sy1>
+add in 5 <z0 z1 z2 z3 z4> out 1 <sz1>
+assert in 2 <sx1 sy1> out 1 <sz1>
+# s == 2 case for (s^0 x0 + s^1 x1 + s^2 x2)*(s^0 y0 + s^1 y1 + s^2 y2) = (s^0 z0 + s^1 z1 + s^2 z2 + s^3 z3 + s^4 z4)
+const-mul-2 in 1 <x1> out 1 <x21>
+const-mul-4 in 1 <x2> out 1 <x22>
+const-mul-2 in 1 <y1> out 1 <y21>
+const-mul-4 in 1 <y2> out 1 <y22>
+const-mul-2 in 1 <z1> out 1 <z21>
+const-mul-4 in 1 <z2> out 1 <z22>
+const-mul-8 in 1 <z3> out 1 <z23>
+add in 3 <x0 x21 x22> out 1 <sx2>
+add in 3 <y0 y21 y22> out 1 <sy2>
+add in 5 <z0 z21 z22 z23> out 1 <sz2>
+assert in 2 <sx2 sy2> out 1 <sz2>
+# s == 3 case for (s^0 x0 + s^1 x1 + s^2 x2)*(s^0 y0 + s^1 y1 + s^2 y2) = (s^0 z0 + s^1 z1 + s^2 z2 + s^3 z3 + s^4 z4)
+const-mul-3 in 1 <x1> out 1 <x31>
+const-mul-9 in 1 <x2> out 1 <x32>
+const-mul-3 in 1 <y1> out 1 <y31>
+const-mul-9 in 1 <y2> out 1 <y32>
+const-mul-3 in 1 <z1> out 1 <z31>
+const-mul-9 in 1 <z2> out 1 <z32>
+const-mul-27 in 1 <z3> out 1 <z33>
+add in 3 <x0 x21 x22> out 1 <sx3>
+add in 3 <y0 y21 y22> out 1 <sy3>
+add in 5 <z0 z21 z22 z23> out 1 <sz3>
+assert in 2 <sx3 sy3> out 1 <sz3>

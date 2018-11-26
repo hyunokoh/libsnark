@@ -1,0 +1,2 @@
+#../../../build/libsnark/jsnark_interface/run_ppzksnark se RSA_Membership.arith RSA_Membership_Sample_Run1.in
+../../../build/libsnark/jsnark_interface/run_ppzksnark gg RSA_Membership.arith RSA_Membership_Sample_Run1.in
